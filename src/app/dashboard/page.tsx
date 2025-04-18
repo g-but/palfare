@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { motion } from 'framer-motion'
 import { Plus, Bitcoin, ArrowRight, User, Settings, BarChart, Check, X } from 'lucide-react'
+import Image from 'next/image'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
@@ -125,10 +126,12 @@ export default function DashboardPage() {
                     <div className="flex items-center space-x-4">
                       <div className="w-16 h-16 rounded-full bg-tiffany-100 flex items-center justify-center">
                         {profile?.avatar_url ? (
-                          <img
+                          <Image
                             src={profile.avatar_url}
                             alt={profile.display_name || profile.username}
-                            className="w-full h-full rounded-full object-cover"
+                            width={64}
+                            height={64}
+                            className="rounded-full object-cover"
                           />
                         ) : (
                           <User className="w-8 h-8 text-tiffany-600" />
