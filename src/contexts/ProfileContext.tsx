@@ -3,20 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useAuth } from './AuthContext'
-
-interface Profile {
-  id: string
-  user_id: string
-  full_name: string
-  avatar_url?: string
-  bio?: string
-  website?: string
-  bitcoin_address?: string
-  lightning_address?: string
-  social_links?: Record<string, string>
-  created_at: string
-  updated_at: string
-}
+import { Profile } from '@/types/profile'
 
 interface ProfileContextType {
   profile: Profile | null
@@ -50,7 +37,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       const { data, error } = await createClientComponentClient()
         .from('profiles')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('id', user.id)
         .single()
 
       if (error) throw error

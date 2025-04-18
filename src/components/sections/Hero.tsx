@@ -24,7 +24,7 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
           >
-            Fund Your Project with{' '}
+            Fund Your Project with&apos;{' '}
             <span className="text-orange-500">Bitcoin</span>
           </motion.h1>
           

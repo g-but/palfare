@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useProfile } from '@/contexts/ProfileContext'
 import { createProfile } from '@/lib/supabase/profile'
 import { useProfileForm } from '@/hooks/useProfileForm'
+import { ProfileFormData } from '@/types/profile'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
@@ -33,16 +34,17 @@ export function CreateProfileForm() {
       setLoading(true)
       setError(null)
 
-      await createProfile({
-        user_id: user.id,
-        ...formData
-      })
+      const profileData: ProfileFormData = {
+        username: formData.username,
+        display_name: formData.display_name
+      }
 
+      await createProfile(profileData)
       await refreshProfile()
       router.push('/dashboard')
     } catch (err) {
       console.error('Error creating profile:', err)
-      setError('Failed to create profile. Please try again.')
+      setError(err instanceof Error ? err.message : 'Failed to create profile. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -58,47 +60,22 @@ export function CreateProfileForm() {
         )}
 
         <Input
-          label="Full Name"
-          name="full_name"
-          value={formData.full_name}
+          label="Username"
+          name="username"
+          value={formData.username}
           onChange={handleChange}
-          error={errors.full_name}
+          error={errors.username}
+          placeholder="Choose a unique username"
           required
         />
 
         <Input
-          label="Bio"
-          name="bio"
-          value={formData.bio}
+          label="Display Name (Optional)"
+          name="display_name"
+          value={formData.display_name}
           onChange={handleChange}
-          type="textarea"
-        />
-
-        <Input
-          label="Website"
-          name="website"
-          value={formData.website}
-          onChange={handleChange}
-          type="url"
-          error={errors.website}
-        />
-
-        <Input
-          label="Bitcoin Address"
-          name="bitcoin_address"
-          value={formData.bitcoin_address}
-          onChange={handleChange}
-          error={errors.bitcoin_address}
-          placeholder="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
-        />
-
-        <Input
-          label="Lightning Address"
-          name="lightning_address"
-          value={formData.lightning_address}
-          onChange={handleChange}
-          error={errors.lightning_address}
-          placeholder="yourname@getalby.com"
+          error={errors.display_name}
+          placeholder="Enter your display name"
         />
 
         <Button

@@ -1,27 +1,15 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Profile } from '@/types/profile'
-import { isValidBitcoinAddress, isValidLightningAddress, isValidWebsite } from '@/lib/validation/address'
+import { ProfileFormData, ProfileFormErrors } from '@/types/profile'
 
-interface FormData {
-  full_name: string
-  bio?: string
-  website?: string
-  bitcoin_address?: string
-  lightning_address?: string
-}
-
-interface FormErrors {
-  full_name?: string
-  website?: string
-  bitcoin_address?: string
-  lightning_address?: string
+interface UseProfileFormProps {
+  initialData?: Partial<ProfileFormData>
 }
 
 interface UseProfileFormReturn {
-  formData: FormData
-  errors: FormErrors
+  formData: ProfileFormData
+  errors: ProfileFormErrors
   loading: boolean
   error: string | null
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
@@ -31,51 +19,33 @@ interface UseProfileFormReturn {
   resetForm: () => void
 }
 
-export function useProfileForm(initialData: Partial<FormData> = {}): UseProfileFormReturn {
-  const [formData, setFormData] = useState<FormData>({
-    full_name: '',
-    bio: '',
-    website: '',
-    bitcoin_address: '',
-    lightning_address: '',
+export function useProfileForm({ initialData }: UseProfileFormProps = {}): UseProfileFormReturn {
+  const [formData, setFormData] = useState<ProfileFormData>({
+    username: '',
+    display_name: '',
     ...initialData
   })
 
-  const [errors, setErrors] = useState<FormErrors>({})
+  const [errors, setErrors] = useState<ProfileFormErrors>({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
-    
-    // Clear error when user starts typing
-    if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }))
-    }
-  }, [errors])
+    // Clear error when user types
+    setErrors(prev => ({ ...prev, [name]: undefined }))
+  }, [])
 
   const validateForm = useCallback((): boolean => {
-    const newErrors: FormErrors = {}
-    
-    // Validate full name
-    if (!formData.full_name.trim()) {
-      newErrors.full_name = 'Full name is required'
-    }
+    const newErrors: ProfileFormErrors = {}
 
-    // Validate website if provided
-    if (formData.website && !isValidWebsite(formData.website)) {
-      newErrors.website = 'Please enter a valid website URL'
-    }
-
-    // Validate Bitcoin address if provided
-    if (formData.bitcoin_address && !isValidBitcoinAddress(formData.bitcoin_address)) {
-      newErrors.bitcoin_address = 'Invalid Bitcoin address'
-    }
-
-    // Validate Lightning address if provided
-    if (formData.lightning_address && !isValidLightningAddress(formData.lightning_address)) {
-      newErrors.lightning_address = 'Invalid Lightning address'
+    if (!formData.username.trim()) {
+      newErrors.username = 'Username is required'
+    } else if (formData.username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters'
+    } else if (formData.username.length > 30) {
+      newErrors.username = 'Username must be less than 30 characters'
     }
 
     setErrors(newErrors)
@@ -84,11 +54,8 @@ export function useProfileForm(initialData: Partial<FormData> = {}): UseProfileF
 
   const resetForm = useCallback(() => {
     setFormData({
-      full_name: '',
-      bio: '',
-      website: '',
-      bitcoin_address: '',
-      lightning_address: ''
+      username: '',
+      display_name: ''
     })
     setErrors({})
     setError(null)

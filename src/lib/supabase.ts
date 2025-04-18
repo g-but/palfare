@@ -1,5 +1,6 @@
 import { createBrowserClient } from '@supabase/ssr'
 import { Database, ProjectFundingPage, ProjectTransaction } from '@/types/database'
+import { getProfile, updateProfile } from '@/lib/supabase/profile'
 
 export const createClient = () => {
   return createBrowserClient<Database>(
@@ -9,20 +10,7 @@ export const createClient = () => {
 }
 
 // Helper functions for common operations
-export const getUserProfile = async (userId: string) => {
-  const supabase = createClient()
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
-    .single()
-  
-  if (error) {
-    console.error('Error fetching user profile:', error)
-    throw new Error('Failed to fetch user profile')
-  }
-  return data
-}
+export const getUserProfile = getProfile
 
 export const getFundingPages = async (userId: string) => {
   const supabase = createClient()
@@ -114,25 +102,6 @@ export const addTransaction = async (transactionData: Database['public']['Tables
   if (error) {
     console.error('Error adding transaction:', error)
     throw new Error('Failed to add transaction')
-  }
-  return data
-}
-
-export const updateProfile = async (
-  userId: string,
-  updates: Database['public']['Tables']['profiles']['Update']
-) => {
-  const supabase = createClient()
-  const { data, error } = await supabase
-    .from('profiles')
-    .update(updates)
-    .eq('id', userId)
-    .select()
-    .single()
-  
-  if (error) {
-    console.error('Error updating profile:', error)
-    throw new Error('Failed to update profile')
   }
   return data
 }

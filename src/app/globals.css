@@ -4,15 +4,20 @@
 
 @layer base {
   html {
-    @apply scroll-smooth;
+    @apply scroll-smooth antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   
   body {
-    @apply bg-gradient-to-b from-tiffany-50 to-white text-slate-800 antialiased;
+    @apply bg-gradient-to-b from-tiffany-50 to-white text-slate-800;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-display;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03", "cv04", "cv11";
   }
 
   h1 {
@@ -52,6 +57,9 @@
   /* Button Base */
   .btn {
     @apply px-4 py-2 rounded-md font-medium transition-colors duration-200;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 
   /* Primary Actions */
@@ -67,6 +75,8 @@
   /* Cards and Containers */
   .card {
     @apply bg-white rounded-lg shadow-md p-6 border border-gray-200;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   .section {
@@ -85,11 +95,17 @@
   /* Form Elements */
   .input {
     @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-tiffany-500 focus:border-transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 
   /* Progress Indicators */
   .progress-bar {
     @apply h-2 rounded-full bg-gray-100 overflow-hidden;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 
   .progress-bar-fill {
@@ -112,10 +128,14 @@
 
   .bitcoin-card {
     @apply bg-tiffany-50 border border-tiffany-100 rounded-xl p-6;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   .kpi-card {
     @apply bg-white rounded-xl shadow-sm p-6;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   .kpi-progress {
