@@ -1,12 +1,4 @@
-export interface UserProfile {
-  id: string;
-  username: string;
-  display_name: string;
-  bio: string | null;
-  avatar_url: string | null;
-  created_at: string;
-  updated_at: string;
-}
+import { Profile } from './profile'
 
 export interface ProjectFundingPage {
   id: string;

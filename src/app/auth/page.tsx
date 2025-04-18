@@ -20,7 +20,6 @@ export default function AuthPage() {
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [fullName, setFullName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -35,9 +34,7 @@ export default function AuthPage() {
           email,
           password,
           options: {
-            data: {
-              full_name: fullName,
-            },
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
           },
         })
         if (error) throw error
@@ -54,7 +51,7 @@ export default function AuthPage() {
         if (error) throw error
         
         // Redirect to dashboard on successful login
-        router.push('/')
+        router.push('/dashboard')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -109,18 +106,6 @@ export default function AuthPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {mode === 'register' && (
-                  <Input
-                    id="fullName"
-                    label="Full Name"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required={mode === 'register'}
-                    autoComplete="name"
-                  />
-                )}
-                
                 <Input
                   id="email"
                   label="Email Address"
@@ -202,8 +187,8 @@ export default function AuthPage() {
                     <Shield className="h-6 w-6 text-tiffany-500" />
                   </div>
                   <div className="ml-3">
-                    <h3 className="text-lg font-medium text-gray-900">Self-Custody</h3>
-                    <p className="mt-1 text-gray-600">You maintain full control of your Bitcoin with direct wallet integration.</p>
+                    <h3 className="text-lg font-medium text-gray-900">Transparency</h3>
+                    <p className="mt-1 text-gray-600">Built-in transparency tools to build trust with your donors.</p>
                   </div>
                 </div>
 
@@ -212,33 +197,10 @@ export default function AuthPage() {
                     <Zap className="h-6 w-6 text-tiffany-500" />
                   </div>
                   <div className="ml-3">
-                    <h3 className="text-lg font-medium text-gray-900">Simple Setup</h3>
-                    <p className="mt-1 text-gray-600">Create your profile and start accepting donations in minutes.</p>
+                    <h3 className="text-lg font-medium text-gray-900">Lightning Fast</h3>
+                    <p className="mt-1 text-gray-600">Support for Lightning Network for instant, low-cost transactions.</p>
                   </div>
                 </div>
-              </div>
-
-              {/* Key Features */}
-              <div className="mt-12">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Key Features</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-tiffany-500 mt-0.5" />
-                    <span className="ml-3 text-gray-600">Custom donation pages</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-tiffany-500 mt-0.5" />
-                    <span className="ml-3 text-gray-600">Profile customization</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-tiffany-500 mt-0.5" />
-                    <span className="ml-3 text-gray-600">Transaction tracking</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-tiffany-500 mt-0.5" />
-                    <span className="ml-3 text-gray-600">No platform fees</span>
-                  </li>
-                </ul>
               </div>
             </div>
           </div>

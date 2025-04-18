@@ -65,7 +65,7 @@ export default async function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Welcome, {user.user_metadata?.full_name || 'User'}</h1>
+        <h1 className="text-3xl font-bold">Welcome, {user.user_metadata?.display_name || 'User'}</h1>
         <Button variant="primary" href="/create">
           Create Funding Page
         </Button>

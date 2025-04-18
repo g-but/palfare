@@ -1,17 +1,23 @@
 /**
  * Validates a Bitcoin address
- * Supports both legacy (1...) and SegWit (bc1...) addresses
+ * Supports both legacy (1...), SegWit (bc1...), and Bitcoin URIs
  * @param address The Bitcoin address to validate
  * @returns boolean indicating if the address is valid
  */
 export function isValidBitcoinAddress(address: string): boolean {
+  // Clean the address if it's in URI format
+  const cleanAddress = address.startsWith('bitcoin:') 
+    ? address.split('?')[0].replace('bitcoin:', '')
+    : address;
+
   // Legacy addresses (1...)
   const legacyRegex = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/
   
   // SegWit addresses (bc1...)
   const segwitRegex = /^bc1[ac-hj-np-z02-9]{11,71}$/
   
-  return legacyRegex.test(address) || segwitRegex.test(address)
+  // Test against valid formats
+  return legacyRegex.test(cleanAddress) || segwitRegex.test(cleanAddress)
 }
 
 /**
