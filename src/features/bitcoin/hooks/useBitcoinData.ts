@@ -1,32 +1,36 @@
-import { useState, useCallback, useEffect } from 'react'
-import { BitcoinWalletData } from '../types'
+'use client'
+
+import { useState, useEffect } from 'react'
 import { fetchBitcoinData } from '../services/mempool'
+import { BitcoinWalletData } from '../types'
 
 export function useBitcoinData(address: string) {
   const [bitcoinData, setBitcoinData] = useState<BitcoinWalletData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  const refreshBitcoinData = useCallback(async () => {
+  const fetchData = async () => {
     try {
-      console.log('Fetching Bitcoin data for address:', address)
       setIsLoading(true)
       setError(null)
       const data = await fetchBitcoinData(address)
-      console.log('Bitcoin data fetched:', data)
       setBitcoinData(data)
     } catch (err) {
-      console.error('Error fetching Bitcoin data:', err)
-      setError(err instanceof Error ? err : new Error('Failed to fetch Bitcoin data'))
+      setError(err instanceof Error ? err.message : 'Failed to fetch Bitcoin data')
     } finally {
       setIsLoading(false)
     }
-  }, [address])
+  }
 
   useEffect(() => {
-    console.log('Initializing Bitcoin data fetch for address:', address)
-    refreshBitcoinData()
-  }, [refreshBitcoinData, address])
+    if (address) {
+      fetchData()
+    }
+  }, [address])
+
+  const refreshBitcoinData = async () => {
+    await fetchData()
+  }
 
   return {
     bitcoinData,

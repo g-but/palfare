@@ -1,5 +1,23 @@
-export const formatBitcoinAmount = (sats: number) => {
-  return sats ? (sats / 100000000).toFixed(8) : '0.00000000'
+export function formatBitcoinAmount(amount: number): string {
+  return amount.toFixed(8)
+}
+
+export function formatTimestamp(timestamp: number): string {
+  const date = new Date(timestamp * 1000)
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+export function formatUSD(amount: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(amount)
 }
 
 export const formatUsdAmount = (sats: number, price: number | null) => {
