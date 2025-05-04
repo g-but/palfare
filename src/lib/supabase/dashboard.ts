@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/features/auth/client'
 
 export async function getFundingPages(userId: string) {
   const supabase = createClient()

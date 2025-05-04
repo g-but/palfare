@@ -1,80 +1,58 @@
-import { ButtonHTMLAttributes, forwardRef } from 'react'
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
-  size?: 'sm' | 'md' | 'lg'
-  isLoading?: boolean
-  href?: string
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "underline-offset-4 hover:underline text-primary",
+      },
+      size: {
+        default: "h-10 py-2 px-4",
+        sm: "h-9 px-3 rounded-md",
+        lg: "h-11 px-8 rounded-md",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+
+export type ButtonVariant = keyof typeof buttonVariants.variants.variant;
+export type ButtonSize = keyof typeof buttonVariants.variants.size;
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  asChild?: boolean;
 }
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ 
-    className, 
-    variant = 'primary', 
-    size = 'md', 
-    isLoading = false,
-    href,
-    children,
-    ...props 
-  }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
-    
-    const variantStyles = {
-      primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
-      secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-      outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-      ghost: 'hover:bg-accent hover:text-accent-foreground'
-    }
-    
-    const sizeStyles = {
-      sm: 'h-9 px-3 text-sm',
-      md: 'h-10 px-4 py-2',
-      lg: 'h-11 px-8 text-lg'
-    }
-    
-    const buttonContent = isLoading ? (
-      <div className="flex items-center">
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-        Loading...
-      </div>
-    ) : children
-
-    if (href) {
-      return (
-        <Link
-          href={href}
-          className={cn(
-            baseStyles,
-            variantStyles[variant],
-            sizeStyles[size],
-            className
-          )}
-        >
-          {buttonContent}
-        </Link>
-      )
-    }
-
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
     return (
-      <button
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        className={cn(
-          baseStyles,
-          variantStyles[variant],
-          sizeStyles[size],
-          className
-        )}
-        disabled={isLoading}
         {...props}
-      >
-        {buttonContent}
-      </button>
-    )
+      />
+    );
   }
-)
+);
+Button.displayName = "Button";
 
-Button.displayName = 'Button'
-
-export default Button 
+export { Button, buttonVariants }; 

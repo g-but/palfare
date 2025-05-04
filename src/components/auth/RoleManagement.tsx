@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/features/auth/AuthContext'
 import { createBrowserClient } from '@supabase/ssr'
 import { UserRole } from '@/types/auth'
 import Button from '@/components/ui/Button'

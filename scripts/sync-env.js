@@ -11,21 +11,23 @@
  * - npm run env:pull - Pull Vercel env vars to local
  */
 
-const { execSync } = require('child_process');
+const { exec } = require('child_process');
+const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
-const readline = require('readline');
 
-// Configuration
+const execAsync = promisify(exec);
 const ENV_FILE = path.join(process.cwd(), '.env.local');
 const EXCLUDED_VARS = ['NODE_ENV']; // Variables to exclude from syncing
 const ENVIRONMENTS = ['production']; // Vercel environments to update
+const TIMEOUT = 30000; // 30 seconds timeout
 
 // Ensure the user is logged in to Vercel
-function ensureVercelLogin() {
+async function ensureVercelLogin() {
   try {
-    execSync('vercel whoami', { stdio: 'pipe' });
+    const { stdout } = await execAsync('vercel whoami', { timeout: TIMEOUT });
     console.log('✅ Vercel CLI authentication verified');
+    return true;
   } catch (error) {
     console.error('❌ Not logged in to Vercel CLI. Please run: vercel login');
     process.exit(1);
@@ -67,7 +69,7 @@ function readEnvFile() {
 
 // Push environment variables to Vercel
 async function pushToVercel() {
-  ensureVercelLogin();
+  await ensureVercelLogin();
   
   const envVars = readEnvFile();
   const envKeys = Object.keys(envVars).filter(key => !EXCLUDED_VARS.includes(key));
@@ -80,12 +82,17 @@ async function pushToVercel() {
       
       try {
         console.log(`⏳ Setting ${key} for ${env} environment...`);
-        execSync(`vercel env add ${key} ${env}`, { 
-          input: Buffer.from(`${value}\n`),
-          stdio: ['pipe', 'inherit', 'inherit']
+        await execAsync(`vercel env add ${key} ${env}`, { 
+          input: `${value}\n`,
+          timeout: TIMEOUT
         });
+        console.log(`✅ Set ${key} successfully`);
       } catch (error) {
-        console.error(`❌ Failed to set ${key}: ${error.message}`);
+        if (error.killed) {
+          console.error(`❌ Timeout setting ${key}`);
+        } else {
+          console.error(`❌ Failed to set ${key}: ${error.message}`);
+        }
       }
     }
   }

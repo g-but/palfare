@@ -1,143 +1,106 @@
-import { BitcoinTransaction, BitcoinWalletData } from '@/types/bitcoin';
+import { Transaction, BitcoinWalletData } from './types'
+import { formatBtcAmount } from '../finance/service'
 
-// API configuration with different providers for fallback
-const API_PROVIDERS = [
-  {
-    name: 'mempool.space',
-    baseUrl: 'https://mempool.space/api',
-    addressEndpoint: (address: string) => `/address/${address}`,
-    txsEndpoint: (address: string) => `/address/${address}/txs`,
-    processBalance: (data: any) => (data.chain_stats.funded_txo_sum - data.chain_stats.spent_txo_sum) / 100000000,
-    processTransactions: (data: any, address: string) => 
-      data.slice(0, 5).map((tx: any) => {
-        let type: 'incoming' | 'outgoing' = 'incoming';
-        let value = 0;
-        
-        for (const input of tx.vin) {
-          if (input.prevout && input.prevout.scriptpubkey_address === address) {
-            type = 'outgoing';
-            break;
-          }
-        }
-        
-        for (const output of tx.vout) {
-          if (output.scriptpubkey_address === address) {
-            value += output.value;
-          }
-        }
-        
-        return {
-          txid: tx.txid,
-          value: value / 100000000, // Convert satoshis to BTC
-          status: tx.status.confirmed ? 'confirmed' : 'pending',
-          timestamp: tx.status.block_time ? tx.status.block_time * 1000 : Date.now(),
-          type
-        };
-      })
-  },
-  {
-    name: 'blockstream.info',
-    baseUrl: 'https://blockstream.info/api',
-    addressEndpoint: (address: string) => `/address/${address}`,
-    txsEndpoint: (address: string) => `/address/${address}/txs`,
-    processBalance: (data: any) => (data.chain_stats.funded_txo_sum - data.chain_stats.spent_txo_sum) / 100000000,
-    processTransactions: (data: any, address: string) => 
-      data.slice(0, 5).map((tx: any) => {
-        // Similar processing as above, adapted for blockstream API
-        let type: 'incoming' | 'outgoing' = 'incoming';
-        let value = 0;
-        
-        for (const input of tx.vin) {
-          if (input.prevout && input.prevout.scriptpubkey_address === address) {
-            type = 'outgoing';
-            break;
-          }
-        }
-        
-        for (const output of tx.vout) {
-          if (output.scriptpubkey_address === address) {
-            value += output.value;
-          }
-        }
-        
-        return {
-          txid: tx.txid,
-          value: value / 100000000,
-          status: tx.status.confirmed ? 'confirmed' : 'pending',
-          timestamp: tx.status.block_time ? tx.status.block_time * 1000 : Date.now(),
-          type
-        };
-      })
+const MAX_RETRIES = 3
+const RETRY_DELAY = 1000 // 1 second
+
+interface MempoolAddressResponse {
+  chain_stats: {
+    funded_txo_sum: number
+    spent_txo_sum: number
   }
-];
+  txs: Array<{
+    txid: string
+    status: {
+      block_time: number
+    }
+    vout: Array<{
+      value: number
+      scriptpubkey_address: string
+    }>
+  }>
+}
 
-// Clean Bitcoin address from URI if needed
-export const cleanBitcoinAddress = (address: string): string => {
-  return address.startsWith('bitcoin:') 
-    ? address.split('?')[0].replace('bitcoin:', '')
-    : address;
-};
+interface MempoolPriceResponse {
+  USD: number
+}
 
-// Fetch wallet data with failover between different providers
-export const fetchBitcoinWalletData = async (address: string): Promise<BitcoinWalletData> => {
-  const cleanAddress = cleanBitcoinAddress(address);
-  
-  for (const provider of API_PROVIDERS) {
-    try {
-      // Fetch address data
-      const addressUrl = `${provider.baseUrl}${provider.addressEndpoint(cleanAddress)}`;
-      const addressResponse = await fetch(addressUrl);
-      
-      if (!addressResponse.ok) {
-        console.warn(`Failed to fetch from ${provider.name}, trying next provider...`);
-        continue;
-      }
-      
-      const addressData = await addressResponse.json();
-      const balance = provider.processBalance(addressData);
-      
-      // Fetch transaction data
-      const txsUrl = `${provider.baseUrl}${provider.txsEndpoint(cleanAddress)}`;
-      const txsResponse = await fetch(txsUrl);
-      
-      if (!txsResponse.ok) {
-        console.warn(`Failed to fetch transactions from ${provider.name}, trying next provider...`);
-        continue;
-      }
-      
-      const txsData = await txsResponse.json();
-      const transactions = provider.processTransactions(txsData, cleanAddress);
-      
+async function fetchWithRetry(url: string, options: RequestInit, retries = MAX_RETRIES): Promise<Response | null> {
+  try {
+    const response = await fetch(url, options)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    return response
+  } catch (error) {
+    if (retries > 0) {
+      console.warn(`Retrying request to ${url} (${retries} attempts remaining)`)
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY))
+      return fetchWithRetry(url, options, retries - 1)
+    }
+    console.error(`Failed to fetch ${url} after ${MAX_RETRIES} attempts:`, error)
+    return null
+  }
+}
+
+export function getTransactionUrl(txid: string): string {
+  return `https://mempool.space/tx/${txid}`
+}
+
+export function formatBitcoinAmount(amount: number): string {
+  return (amount / 100000000).toFixed(4)
+}
+
+const BITCOIN_ADDRESS = 'bc1qgsup75ajy4rln08j0te9wpdgrf46ctx6w94xzq'
+const MEMPOOL_API = 'https://mempool.space/api'
+const COINGECKO_API = 'https://api.coingecko.com/api/v3'
+
+export async function fetchBitcoinData(): Promise<BitcoinWalletData> {
+  try {
+    const [addressData, priceData] = await Promise.all([
+      fetch(`${MEMPOOL_API}/address/${BITCOIN_ADDRESS}`).then(res => res.json()).catch(() => null),
+      fetch(`${COINGECKO_API}/simple/price?ids=bitcoin&vs_currencies=usd`).then(res => res.json()).catch(() => null)
+    ])
+
+    if (!addressData) {
+      console.error('Failed to fetch address data')
       return {
-        balance,
-        transactions,
+        address: BITCOIN_ADDRESS,
+        balance: 0,
+        btcPrice: null,
+        transactions: [],
         lastUpdated: Date.now()
-      };
-    } catch (error) {
-      console.error(`Error with provider ${provider.name}:`, error);
-      // Continue to next provider
+      }
+    }
+
+    const transactions: Transaction[] = addressData.txids.map((txid: string) => ({
+      txid,
+      time: addressData.mempool_txs.find((tx: any) => tx.txid === txid)?.time || 0,
+      value: addressData.mempool_txs.find((tx: any) => tx.txid === txid)?.value || 0,
+      address: BITCOIN_ADDRESS,
+      verified: true,
+      url: `https://mempool.space/tx/${txid}`
+    }))
+
+    return {
+      address: BITCOIN_ADDRESS,
+      balance: addressData.chain_stats.funded_txo_sum - addressData.chain_stats.spent_txo_sum,
+      btcPrice: priceData?.bitcoin?.usd || null,
+      transactions,
+      lastUpdated: Date.now()
+    }
+  } catch (error) {
+    console.error('Error fetching Bitcoin data:', error)
+    return {
+      address: BITCOIN_ADDRESS,
+      balance: 0,
+      btcPrice: null,
+      transactions: [],
+      lastUpdated: Date.now()
     }
   }
-  
-  // If all providers fail
-  throw new Error('Failed to fetch wallet data from any provider');
-};
+}
 
-// Format BTC value for display
-export const formatBtcValue = (satoshis: number): string => {
-  const btc = satoshis / 100000000;
-  return btc.toLocaleString('en-US', {
-    minimumFractionDigits: 8,
-    maximumFractionDigits: 8
-  });
-};
-
-// Get mempool.space transaction URL
-export const getTransactionUrl = (txid: string): string => {
-  return `https://mempool.space/tx/${txid}`;
-};
-
-// Get mempool.space address URL
-export const getAddressUrl = (address: string): string => {
-  return `https://mempool.space/address/${cleanBitcoinAddress(address)}`;
-};
+export function generateTransactionUrl(txid: string): string {
+  return `https://mempool.space/tx/${txid}`
+} 

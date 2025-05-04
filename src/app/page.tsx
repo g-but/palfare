@@ -1,80 +1,62 @@
 'use client'
 
-import { useAuth } from '@/contexts/AuthContext'
-import Button from '@/components/ui/Button'
-import Card from '@/components/ui/Card'
-import FundingPageList from '@/components/funding/FundingPageList'
-import Hero from '@/components/sections/Hero'
-import { Loader2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useAuth } from '@/features/auth/hooks'
+import { Button } from '@/components/ui/Button'
+import { Bitcoin, ArrowRight, Sparkles } from 'lucide-react'
+import Link from 'next/link'
 
-export default function Home() {
-  const { user, isLoading } = useAuth()
-  const router = useRouter()
+export default function HomePage() {
+  const { user } = useAuth()
 
-  useEffect(() => {
-    if (!isLoading && user) {
-      router.replace('/dashboard')
-    }
-  }, [user, isLoading, router])
-
-  // Show loading state only briefly while checking auth
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-tiffany-500" />
-      </div>
-    )
-  }
-
-  // If user is logged in, they'll be redirected by useEffect
-  if (user) {
-    return null
-  }
-
-  // Show home page for non-authenticated users
   return (
-    <main>
-      <Hero />
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-full bg-tiffany-500/10 flex items-center justify-center">
-                <svg className="w-6 h-6 text-tiffany-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold">Quick Setup</h3>
+    <div className="min-h-screen bg-gradient-to-b from-tiffany-50 to-white">
+      <div className="container pt-32 pb-12">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-orange-600 text-sm font-medium mb-6">
+            <Sparkles className="h-4 w-4" />
+            <span>Accept Bitcoin Donations</span>
+          </div>
+          
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            The easiest way to
+            <br />
+            <span className="text-tiffany-600">accept Bitcoin donations</span>
+          </h1>
+          
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Create your donation page in minutes. Receive Bitcoin directly to your wallet with zero fees.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Link href="/auth?mode=register">
+              <Button className="bg-tiffany-500 hover:bg-tiffany-600 text-white px-8 py-3 text-lg">
+                Create your page
+              </Button>
+            </Link>
+            <Link href="/browse">
+              <Button variant="outline" className="px-8 py-3 text-lg">
+                See who's using it
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="flex items-center justify-center gap-8 text-gray-500">
+            <div className="flex items-center gap-2">
+              <Bitcoin className="h-5 w-5 text-orange-500" />
+              <span>Direct to Wallet</span>
             </div>
-            <p className="text-gray-600">Create your customized donation page in minutes with no technical knowledge required.</p>
-          </Card>
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-full bg-tiffany-500/10 flex items-center justify-center">
-                <svg className="w-6 h-6 text-tiffany-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold">Instant Payouts</h3>
+            <div className="flex items-center gap-2">
+              <Bitcoin className="h-5 w-5 text-orange-500" />
+              <span>No Middlemen</span>
             </div>
-            <p className="text-gray-600">Receive donations directly to your Bitcoin wallet with no intermediaries or delays.</p>
-          </Card>
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-full bg-tiffany-500/10 flex items-center justify-center">
-                <svg className="w-6 h-6 text-tiffany-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold">Real-time Stats</h3>
+            <div className="flex items-center gap-2">
+              <Bitcoin className="h-5 w-5 text-orange-500" />
+              <span>Zero Fees</span>
             </div>
-            <p className="text-gray-600">Track donations, engagement, and impact with detailed analytics and insights.</p>
-          </Card>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 } 

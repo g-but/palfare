@@ -1,82 +1,73 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { BookOpen, Bitcoin, Globe, Shield, Zap } from 'lucide-react'
-
-const topics = [
-  {
-    icon: Bitcoin,
-    title: 'Bitcoin & Donations',
-    description: 'Exploring how Bitcoin is revolutionizing charitable giving and creating new opportunities for transparent donations.'
-  },
-  {
-    icon: Globe,
-    title: 'Global Impact',
-    description: 'Stories of how Bitcoin donations are making a difference worldwide, from local communities to global initiatives.'
-  },
-  {
-    icon: Shield,
-    title: 'Privacy & Security',
-    description: 'Understanding the importance of privacy in donations and how Bitcoin provides secure, transparent giving.'
-  },
-  {
-    icon: Zap,
-    title: 'Innovation & Future',
-    description: 'Insights into the future of donations and how technology is shaping the way we support causes we care about.'
-  }
-]
+import { Button } from '@/components/ui/Button'
+import { ArrowRight, BookOpen, Users } from 'lucide-react'
+import Link from 'next/link'
 
 export default function BlogPage() {
   return (
-    <main className="min-h-screen pt-20">
-      <section className="section">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-4xl mx-auto text-center mb-16"
-          >
-            <div className="flex justify-center mb-8">
-              <div className="w-20 h-20 rounded-full bg-tiffany/10 flex items-center justify-center">
-                <BookOpen className="w-10 h-10 text-tiffany" />
-              </div>
-            </div>
-            <h1 className="mb-4">Our Blog is Coming Soon</h1>
-            <p className="text-xl text-slate-600 mb-8">
-              We&apos;re crafting insightful content about Bitcoin, transparent donations, and the future of charitable giving.
-            </p>
-            <p className="text-lg text-slate-500">
-              Subscribe to our newsletter to be the first to know when we publish.
-            </p>
-          </motion.div>
+    <div className="min-h-screen bg-gradient-to-b from-tiffany-50 to-white">
+      <div className="container pt-32 pb-12">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-orange-600 text-sm font-medium mb-6">
+            <BookOpen className="h-4 w-4" />
+            <span>Our Blog</span>
+          </div>
+          
+          <h1 className="text-4xl font-bold text-gray-900 mb-6">
+            Coming Soon
+          </h1>
+          
+          <p className="text-xl text-gray-600 mb-8">
+            Hey there! We're working on something special for you. Our blog will be your go-to place for:
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
-          >
-            {topics.map((topic, index) => (
-              <motion.div
-                key={topic.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
-                className="card p-6"
-              >
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-tiffany/10 flex items-center justify-center">
-                    <topic.icon className="w-6 h-6 text-tiffany" />
-                  </div>
-                  <h3 className="text-xl font-bold">{topic.title}</h3>
-                </div>
-                <p className="text-slate-600">{topic.description}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+          <div className="space-y-4 mb-12 text-left">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 mt-1">
+                <div className="w-2 h-2 rounded-full bg-tiffany-500"></div>
+              </div>
+              <p className="text-gray-600">Tips and best practices for accepting Bitcoin donations</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 mt-1">
+                <div className="w-2 h-2 rounded-full bg-tiffany-500"></div>
+              </div>
+              <p className="text-gray-600">Success stories from creators using OrangeCat</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 mt-1">
+                <div className="w-2 h-2 rounded-full bg-tiffany-500"></div>
+              </div>
+              <p className="text-gray-600">Updates about new features and improvements</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 mt-1">
+                <div className="w-2 h-2 rounded-full bg-tiffany-500"></div>
+              </div>
+              <p className="text-gray-600">Insights about Bitcoin and the future of digital payments</p>
+            </div>
+          </div>
+
+          <p className="text-xl text-gray-600 mb-8">
+            While we're putting the finishing touches on our blog, why not check out what others are doing with OrangeCat?
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/about">
+              <Button className="bg-tiffany-500 hover:bg-tiffany-600 text-white px-8 py-3 text-lg">
+                Learn about us
+              </Button>
+            </Link>
+            <Link href="/browse">
+              <Button variant="outline" className="px-8 py-3 text-lg">
+                Browse creators
+                <Users className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
   )
 } 

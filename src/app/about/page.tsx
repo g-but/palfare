@@ -1,120 +1,179 @@
-'use client';
+'use client'
 
-import { motion } from 'framer-motion';
-import { Bitcoin, Zap, Shield, Globe, Eye, Settings, ArrowRight } from 'lucide-react';
-
-const values = [
-  {
-    icon: Bitcoin,
-    title: 'Bitcoin First',
-    description: 'We believe in Bitcoin as the future of money and are committed to building tools that make it accessible to everyone.',
-  },
-  {
-    icon: Zap,
-    title: 'Simplicity',
-    description: 'We keep things simple. No unnecessary complexity, no hidden fees, just straightforward Bitcoin donations.',
-  },
-  {
-    icon: Shield,
-    title: 'Privacy',
-    description: 'Your privacy matters. We don\'t require accounts or personal information to use our service.',
-  },
-  {
-    icon: Globe,
-    title: 'Global',
-    description: 'Bitcoin knows no borders. We\'re building tools that work for everyone, everywhere.',
-  },
-];
-
-const steps = [
-  {
-    icon: Settings,
-    title: 'Create Your Page',
-    description: 'Set up your donation page in minutes. Customize your message, add your Bitcoin address, and choose how you want to engage with your community.',
-  },
-  {
-    icon: Eye,
-    title: 'Transparent Transactions',
-    description: 'All Bitcoin transactions are public by nature. We make it easy to view and engage with your transaction history, building trust through transparency.',
-  },
-  {
-    icon: Bitcoin,
-    title: 'Engage & Build Trust',
-    description: 'Comment on incoming and outgoing transactions, explain where funds are going, and interact with your donors. This open dialogue creates a transparent and trustworthy donation ecosystem.',
-  },
-];
+import { Button } from '@/components/ui/Button'
+import { Bitcoin, ArrowRight, Target, Lightbulb, Rocket, GitBranch, Heart } from 'lucide-react'
+import Link from 'next/link'
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen pt-20">
-      <section className="section">
-        <div className="container">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto text-center mb-16"
-          >
-            <h1 className="mb-4">About OrangeCat</h1>
-            <p className="text-xl text-slate-600">
-              Making Bitcoin donations simple and accessible for everyone
+    <div className="min-h-screen bg-gradient-to-b from-tiffany-50 to-white">
+      <div className="container pt-32 pb-12">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl font-bold text-gray-900 mb-6">
+              Our Story
+            </h1>
+            <p className="text-xl text-gray-600">
+              OrangeCat was born from a simple observation: accepting Bitcoin donations should be as easy as sharing a link, 
+              and transparency should be accessible to everyone.
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="max-w-3xl mx-auto mb-16"
-          >
-            <h2 className="text-2xl font-bold mb-6">Our Mission</h2>
-            <p className="text-slate-600 mb-4">
-              OrangeCat was created with a simple mission: to make accepting Bitcoin donations as easy as possible. 
-              We believe that Bitcoin is the future of money, and we want to help creators, organizations, and 
-              individuals around the world accept Bitcoin donations without any hassle.
-            </p>
-            <p className="text-slate-600">
-              Our platform is designed to be simple, secure, and accessible to everyone. No accounts required, 
-              no hidden fees, just straightforward Bitcoin donations.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="max-w-3xl mx-auto"
-          >
-            <h2 className="text-2xl font-bold mb-6">Why Choose OrangeCat?</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="card">
-                <h3 className="text-xl font-bold mb-4 text-tiffany-500">Simple Setup</h3>
-                <p className="text-slate-600">
-                  Create your donation page in minutes with our intuitive interface.
-                </p>
+          <div className="space-y-16">
+            {/* Mission Section */}
+            <div className="flex flex-col md:flex-row gap-8 items-start">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-tiffany-100 flex items-center justify-center">
+                <Target className="h-6 w-6 text-tiffany-600" />
               </div>
-              <div className="card">
-                <h3 className="text-xl font-bold mb-4 text-tiffany-500">Transparent</h3>
-                <p className="text-slate-600">
-                  All transactions are recorded on the Bitcoin blockchain for complete transparency.
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Mission</h2>
+                <p className="text-gray-600 mb-4">
+                  We're building tools that make it easy for anyone - from open source developers and non-profits 
+                  to content creators and individual projects - to accept Bitcoin donations while maintaining complete 
+                  transparency. We believe that financial transparency and progress tracking should be accessible to all.
                 </p>
-              </div>
-              <div className="card">
-                <h3 className="text-xl font-bold mb-4 text-tiffany-500">Secure</h3>
-                <p className="text-slate-600">
-                  Your funds are secured by the Bitcoin network, the most secure financial network in the world.
-                </p>
-              </div>
-              <div className="card">
-                <h3 className="text-xl font-bold mb-4 text-tiffany-500">Global</h3>
-                <p className="text-slate-600">
-                  Accept donations from anywhere in the world, 24/7, with instant settlement.
+                <p className="text-gray-600">
+                  Our platform enables you to showcase your work, track your progress, and build trust with your 
+                  supporters through verifiable metrics and real-time updates.
                 </p>
               </div>
             </div>
-          </motion.div>
+
+            {/* Problem Section */}
+            <div className="flex flex-col md:flex-row gap-8 items-start">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+                <Lightbulb className="h-6 w-6 text-orange-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">The Problem We're Solving</h2>
+                <p className="text-gray-600 mb-4">
+                  Today, accepting Bitcoin donations is either technically complex or requires trusting third-party 
+                  services that take fees and control your funds. Additionally, there's no easy way to:
+                </p>
+                <ul className="space-y-2 text-gray-600 mb-4">
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Show real-time progress towards your goals</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Demonstrate financial transparency to your supporters</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Track and showcase your impact</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Solution Section */}
+            <div className="flex flex-col md:flex-row gap-8 items-start">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-tiffany-100 flex items-center justify-center">
+                <Bitcoin className="h-6 w-6 text-tiffany-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Solution</h2>
+                <p className="text-gray-600 mb-4">
+                  OrangeCat provides a simple, elegant solution that puts you in control:
+                </p>
+                <ul className="space-y-2 text-gray-600 mb-4">
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Create a transparent project page in minutes</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Receive Bitcoin donations directly to your wallet</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Track and display your progress</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Zero fees, no middlemen, complete control</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Vision Section */}
+            <div className="flex flex-col md:flex-row gap-8 items-start">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+                <Rocket className="h-6 w-6 text-orange-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Vision</h2>
+                <p className="text-gray-600 mb-4">
+                  This is just the beginning. We're building OrangeCat into a comprehensive platform for transparent 
+                  funding and progress tracking. Here's what's coming:
+                </p>
+                <ul className="space-y-2 text-gray-600 mb-4">
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Customizable KPIs and progress tracking</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Automated financial reporting and transparency</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Integration with popular platforms and tools</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Milestone tracking and achievement badges</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <div className="flex-shrink-0 mt-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-tiffany-500"></div>
+                    </div>
+                    <span>Community engagement and supporter recognition</span>
+                  </li>
+                </ul>
+                <p className="text-gray-600">
+                  We're committed to building the most powerful platform for transparent funding, 
+                  helping everyone showcase their impact and build trust with their supporters.
+                </p>
+              </div>
+            </div>
+
+            {/* CTA Section */}
+            <div className="text-center mt-12">
+              <Link href="/auth?mode=register">
+                <Button className="bg-tiffany-500 hover:bg-tiffany-600 text-white px-8 py-3 text-lg">
+                  Start your transparent journey
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
-      </section>
-    </main>
-  );
+      </div>
+    </div>
+  )
 } 

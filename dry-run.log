@@ -1,0 +1,37 @@
+Starting migration to feature-first structure...
+(DRY RUN - No changes will be made)
+Creating feature directories...
+Would create directory: src/features/auth
+Would create directory: src/features/auth/pages
+Would create directory: src/features/profile
+Would create directory: src/features/profile/components
+Would create directory: src/features/bitcoin
+Planning file moves...
+Would move: src/lib/supabase/client.ts -> src/features/auth/client.ts
+Would move: src/app/login/page.tsx -> src/features/auth/pages/login.tsx
+Would move: src/hooks/useProfile.ts -> src/features/profile/hooks.ts
+Would move: src/hooks/useProfileForm.ts -> src/features/profile/hooks.ts
+Would move: src/services/profileService.ts -> src/features/profile/service.ts
+Would move: src/types/profile.ts -> src/features/profile/types.ts
+Would move: src/app/edit-profile/page.tsx -> src/features/profile/components/ProfileView.tsx
+Would move: src/app/edit-profile/EditProfileForm.tsx -> src/features/profile/components/ProfileForm.tsx
+Would move: src/services/bitcoin/index.ts -> src/features/bitcoin/service.ts
+Would move: src/types/bitcoin/index.ts -> src/features/bitcoin/types.ts
+Would move: src/hooks/useBitcoinWallet.ts -> src/features/bitcoin/hooks.ts
+Planning import updates...
+Would update imports in: src/hooks/useBitcoinWallet.ts
+Would update imports in: src/hooks/useProfile.ts
+Would update imports in: src/hooks/useProfileForm.ts
+Would update imports in: src/app/edit-profile/EditProfileForm.tsx
+Would update imports in: src/components/bitcoin/TransactionCard.tsx
+Would update imports in: src/components/bitcoin/TransactionsList.tsx
+Would update imports in: src/components/dashboard/DashboardContent.tsx
+Would update imports in: src/components/dashboard/DashboardLayout.tsx
+Would update imports in: src/features/auth/AuthContext.tsx
+Would update imports in: src/features/profile/service.ts
+Would update imports in: src/lib/supabase/dashboard.ts
+Would update imports in: src/lib/supabase/profile.ts
+Would update imports in: src/services/bitcoin/index.ts
+
+Dry run complete! Review the proposed changes above.
+Would you like to proceed with the real migration? (y/n): 

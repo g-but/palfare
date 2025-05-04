@@ -1,0 +1,3 @@
+git mv "src/features/profile/service.ts" "src/services/profileService.ts"
+git mv "src/features/bitcoin/service.ts" "src/services/bitcoin/index.ts"
+git mv "src/features/bitcoin/hooks.ts" "src/hooks/useBitcoinWallet.ts"

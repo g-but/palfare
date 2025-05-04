@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Bitcoin, ArrowRight, CheckCircle2, Shield, Zap, Loader2 } from 'lucide-react'
-import Button from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Card from '@/components/ui/Card'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/features/auth/AuthContext'
 
 export default function AuthPage() {
   const router = useRouter()
@@ -27,36 +27,14 @@ export default function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setError('')
     setLoading(true)
-    setError(null)
-
-    // Frontend validation
-    if (mode === 'register') {
-      if (password.length < 6) {
-        setError('Password must be at least 6 characters long')
-        setLoading(false)
-        return
-      }
-      if (password !== confirmPassword) {
-        setError('Passwords do not match')
-        setLoading(false)
-        return
-      }
-    }
 
     try {
-      if (mode === 'register') {
-        await signUp(email, password)
-        // Show success message and switch to login
-        setMode('login')
-        setPassword('')
-        setConfirmPassword('')
-        alert('Registration successful! Please check your email to verify your account.')
-      } else {
-        await signIn(email, password)
-      }
+      await signIn(email, password)
+      router.push('/dashboard')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      setError(err instanceof Error ? err.message : 'Failed to sign in')
     } finally {
       setLoading(false)
     }
@@ -123,7 +101,7 @@ export default function AuthPage() {
                     label="Email Address"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                     required
                     autoComplete={mode === 'login' ? 'username' : 'email'}
                     className="transition-all duration-200 focus:ring-2 focus:ring-tiffany-500"
@@ -135,7 +113,7 @@ export default function AuthPage() {
                       label="Password"
                       type={showPassword ? "text" : "password"}
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                       required
                       autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                       className="transition-all duration-200 focus:ring-2 focus:ring-tiffany-500"

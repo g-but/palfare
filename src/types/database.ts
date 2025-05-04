@@ -10,14 +10,25 @@ export type Database = {
   public: {
     Tables: {
       profiles: {
-        Row: Profile
-        Insert: Omit<Profile, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Profile, 'id'>>
-      }
-      funding_pages: {
-        Row: FundingPage
-        Insert: Omit<FundingPage, 'id' | 'created_at' | 'updated_at' | 'current_amount'>
-        Update: Partial<Omit<FundingPage, 'id'>>
+        Row: {
+          id: string
+          display_name: string
+          bio: string | null
+          bitcoin_address: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          display_name: string
+          bio?: string | null
+          bitcoin_address?: string | null
+        }
+        Update: {
+          display_name?: string
+          bio?: string | null
+          bitcoin_address?: string | null
+        }
       }
       transactions: {
         Row: Transaction
@@ -160,7 +171,6 @@ export interface Profile {
   website: string | null
   bio: string | null
   bitcoin_address: string | null
-  lightning_address: string | null
   created_at: string
   updated_at: string
 }
@@ -171,7 +181,6 @@ export interface ProfileFormData {
   website?: string
   bio?: string
   bitcoin_address?: string
-  lightning_address?: string
 }
 
 export interface PasswordFormData {
@@ -201,7 +210,6 @@ export interface Transaction {
   id: string
   sender_id: string
   recipient_id: string
-  funding_page_id: string
   amount: number
   status: 'completed' | 'pending' | 'failed'
   created_at: string

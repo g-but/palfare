@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Menu } from 'lucide-react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/features/auth/AuthContext'
 import UserProfileDropdown from '@/components/user/UserProfileDropdown'
 import { navigation } from '@/config/navigation'
 import { useRouter } from 'next/navigation'
@@ -55,7 +55,7 @@ export default function Header() {
                   key={item.name}
                   href={item.href}
                   onClick={(e) => {
-                    if (item.requiresAuth && !user) {
+                    if (item.name === 'Create' && !user) {
                       e.preventDefault()
                       router.push('/auth?mode=login')
                     }
@@ -100,7 +100,7 @@ export default function Header() {
                   key={item.name}
                   href={item.href}
                   onClick={(e) => {
-                    if (item.requiresAuth && !user) {
+                    if (item.name === 'Create' && !user) {
                       e.preventDefault()
                       router.push('/auth?mode=login')
                     }

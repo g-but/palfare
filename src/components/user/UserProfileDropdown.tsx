@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/features/auth/AuthContext'
 import { User, Settings, LogOut, LayoutDashboard } from 'lucide-react'
 import { ChevronDown } from 'lucide-react'
 import Button from '@/components/ui/Button'

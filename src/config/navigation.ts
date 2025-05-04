@@ -2,9 +2,9 @@ import { Github, Twitter } from 'lucide-react'
 
 export const navigation = {
   main: [
-    { name: 'Home', href: '/' },
     { name: 'Create', href: '/create', requiresAuth: true },
-    { name: 'Fund Us', href: '/fund-us' },
+    { name: 'Browse', href: '/browse', requiresAuth: false },
+    { name: 'Fund Us', href: '/fund-us', requiresAuth: false },
     { name: 'About', href: '/about' },
     { name: 'Blog', href: '/blog' },
   ],

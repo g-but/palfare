@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { TransparencyScore } from './TransparencyScore'
+import { TransparencyScore } from '@/components/features/transparency/TransparencyScore'
 
 interface ProfileStatsProps {
   transparencyScore: number

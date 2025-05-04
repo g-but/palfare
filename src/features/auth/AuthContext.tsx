@@ -2,34 +2,26 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/features/auth/client'
 import { useRouter } from 'next/navigation'
 
 interface AuthContextType {
   user: User | null
   isLoading: boolean
-  isAdmin: boolean
   signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string) => Promise<void>
+  signUp: (email: string, password: string, username: string) => Promise<void>
   signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// List of public paths that don't require authentication
-const publicPaths = ['/', '/auth', '/about', '/blog', '/fund-us']
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [isAdmin, setIsAdmin] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    let mounted = true
-
     const supabase = createClient()
-
     if (!supabase) {
       setIsLoading(false)
       return
@@ -37,31 +29,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (mounted) {
-        setUser(session?.user ?? null)
-        setIsAdmin(session?.user?.app_metadata?.role === 'admin')
-        setIsLoading(false)
-      }
+      setUser(session?.user ?? null)
+      setIsLoading(false)
     })
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (mounted) {
-        setUser(session?.user ?? null)
-        setIsAdmin(session?.user?.app_metadata?.role === 'admin')
-        setIsLoading(false)
-      }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+      setIsLoading(false)
 
-      // Handle navigation after state update
       if (_event === 'SIGNED_IN') {
-        router.push('/dashboard')
+        router.push('/profile')
       } else if (_event === 'SIGNED_OUT') {
         router.push('/')
       }
     })
 
     return () => {
-      mounted = false
       subscription.unsubscribe()
     }
   }, [router])
@@ -79,14 +63,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, username: string) => {
     const supabase = createClient()
     if (!supabase) return
 
     setIsLoading(true)
     try {
-      const { error } = await supabase.auth.signUp({ email, password })
+      const { data, error } = await supabase.auth.signUp({ email, password })
       if (error) throw error
+      
+      if (data.user) {
+        // Create profile after successful signup
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: data.user.id,
+            display_name: username,
+            created_at: new Date().toISOString()
+          })
+        
+        if (profileError) throw profileError
+      }
     } finally {
       setIsLoading(false)
     }
@@ -101,7 +98,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
       setUser(null)
-      setIsAdmin(false)
     } finally {
       setIsLoading(false)
     }
@@ -110,7 +106,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     user,
     isLoading,
-    isAdmin,
     signIn,
     signUp,
     signOut,
