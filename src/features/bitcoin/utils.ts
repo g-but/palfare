@@ -1,5 +1,7 @@
-export function formatBitcoinAmount(amount: number): string {
-  return amount.toFixed(8)
+export function formatBitcoinAmount(sats: number): string {
+  if (!sats) return '0.00000000'
+  const btc = sats / 100000000
+  return btc.toFixed(8)
 }
 
 export function formatTimestamp(timestamp: number): string {
@@ -13,11 +15,16 @@ export function formatTimestamp(timestamp: number): string {
   })
 }
 
-export function formatUSD(amount: number): string {
+export function formatUSD(sats: number, btcPrice: number): string {
+  if (!sats || !btcPrice) return '$0.00'
+  const btc = sats / 100000000
+  const usd = btc * btcPrice
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD'
-  }).format(amount)
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(usd)
 }
 
 export const formatUsdAmount = (sats: number, price: number | null) => {

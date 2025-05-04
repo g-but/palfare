@@ -27,8 +27,6 @@ export function BalanceDisplay({ balance, btcPrice, isLoading, error }: BalanceD
     )
   }
 
-  const usdValue = balance * btcPrice
-
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
@@ -38,7 +36,7 @@ export function BalanceDisplay({ balance, btcPrice, isLoading, error }: BalanceD
             {formatBitcoinAmount(balance)} BTC
           </div>
           <div className="text-lg text-gray-500">
-            {formatUSD(usdValue)}
+            {formatUSD(balance, btcPrice)}
           </div>
         </div>
       </div>
